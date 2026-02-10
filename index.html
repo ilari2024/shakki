@@ -344,6 +344,14 @@
   <script>
     // KIRJAUTUMISEN HALLINTA
     function checkAuth() {
+      // Tarkistetaan URL-parametrit (jos palataan kirjautumisesta)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('login') === 'success') {
+        localStorage.setItem('isLoggedIn', 'true');
+        // Siivotaan URL ilman parametreja
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+
       const isLoggedIn = localStorage.getItem('isLoggedIn');
       if (isLoggedIn === 'true') {
         showMainMenu();
@@ -358,6 +366,7 @@
     }
 
     function redirectToLogin() {
+      // Lisätään nykyinen URL paluuosoitteeksi, jos mahdollista
       window.location.href = "https://ilari2024.github.io/kirjaudu/";
     }
 
@@ -601,7 +610,7 @@
       if (difficulty === 'easy') move = moves[Math.floor(Math.random() * moves.length)];
       else {
         moves.forEach(m => { m.s = (board[m.t[0]][m.t[1]] ? 10 : 0) + Math.random(); });
-        moves.sort((a, b) => b.s - a.s);
+        moves.sort((a, b) => b.s - a.score);
         move = moves[0];
       }
       makeMove(move.f[0], move.f[1], move.t[0], move.t[1]);
